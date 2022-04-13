@@ -5,6 +5,7 @@ class Todo extends Component {
     constructor(props){
         super(props);
         this.state ={
+            // isEditing: this.props.todoEditingId
             isEditing: false
         }
     }
@@ -46,15 +47,22 @@ class Todo extends Component {
                             checked={this.props.todo.isCompleted}
                             onChange={() => this.props.markCompleted(this.props.todo.id)}
                         />
-                        <label onDoubleClick={() => this.props.getEditTodo(this.props.todo.id)}>{this.props.todo.text}</label>
+                        <label 
+                            onDoubleClick={() => 
+
+                                {this.props.getEditTodo(this.props.todo.id)}
+                                // this.setState((state) => ({ isEditing: !state.isEditing }))
+                            }
+                            >
+                            {this.props.todo.text}</label>
                         <button className="remove" onClick={() => this.props.removeTodo(this.props.todo.id)} />
                     </div> :
                     <input
                         className="edit"
                         // value={text}
-                        value={this.props.text}
+                        value={this.props.todo.text}
                         onChange={(e) => this.props.setText(e.target.value)}
-                        onBlur={this.props.onEditTodo}
+                        onBlur={this.onEditTodo}
                         onKeyPress={(e) => {
                             if (e.key === 'Enter' && this.props.text) {
                                 this.onEditTodo()
