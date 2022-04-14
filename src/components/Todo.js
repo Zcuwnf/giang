@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 
+
 class Todo extends Component {
 
     constructor(props){
         super(props);
         this.state ={
-            // isEditing: this.props.todoEditingId
-            isEditing: false
+            isEditing: false,
+            text: ""
         }
     }
 
@@ -20,26 +21,32 @@ class Todo extends Component {
     //     removeTodo
     // } = props
 
-    // const isEditing = todoEditingId === todo.id
+    // const this.state.isEditing = this.prosp.todoEditingId === this.props.todo.id
     // const [text, setText] = useState(todo.text)
    
-    // todoisEditing = () =>{
-    //     this.isEditing = this.props.todoEditingId === this.props.todo.id
-    // }
     
     onEditTodo = () => {
         this.props.editTodo({
             todo: this.props.todo,
-            text: this.props.text
+            text: this.state.text
         }, this.props.index)
         this.props.getEditTodo('')
     }
 
+    setText = (e) =>{
+        this.setState({
+            [e.target.title]: e.target.value,
+        })  
+      }
+
     render(){
+
+        this.isEditing = this.props.todoEditingId === this.props.todo.id
+
         return (
-        <li className={`${this.state.isEditing ? 'editing' : ''} ${this.props.todo.isCompleted ? 'completed' : ''}`}>
+        <li className={`${this.isEditing ? 'editing' : ''} ${this.props.todo.isCompleted ? 'completed' : ''}`}>
             {
-                !this.state.isEditing ?
+                !this.isEditing ?
                     <div className="view">
                         <input
                             className="itemList"
@@ -47,24 +54,22 @@ class Todo extends Component {
                             checked={this.props.todo.isCompleted}
                             onChange={() => this.props.markCompleted(this.props.todo.id)}
                         />
-                        <label 
-                            onDoubleClick={() => 
-
-                                {this.props.getEditTodo(this.props.todo.id)}
-                                // this.setState((state) => ({ isEditing: !state.isEditing }))
-                            }
-                            >
-                            {this.props.todo.text}</label>
+                        <label onDoubleClick={() => 
+                            {this.props.getEditTodo(this.props.todo.id)}}
+                        >
+                            {this.props.todo.text}
+                        </label>
                         <button className="remove" onClick={() => this.props.removeTodo(this.props.todo.id)} />
                     </div> :
                     <input
                         className="edit"
                         // value={text}
-                        value={this.props.todo.text}
-                        onChange={(e) => this.props.setText(e.target.value)}
+                        defaultValue={this.props.todo.text}
+                        title='text'
+                        onChange={this.setText}
                         onBlur={this.onEditTodo}
                         onKeyPress={(e) => {
-                            if (e.key === 'Enter' && this.props.text) {
+                            if (e.key === 'Enter' && this.props.todo.text) {
                                 this.onEditTodo()
                             }
                         }}
