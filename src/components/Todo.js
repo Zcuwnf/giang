@@ -1,83 +1,137 @@
-import React, { Component } from 'react'
+// import React, { Component } from 'react'
 
 
-class Todo extends Component {
+// class Todo extends Component {
 
-    constructor(props){
-        super(props);
-        this.state ={
-            isEditing: false,
-            text: ""
-        }
-    }
+//     constructor(props){
+//         super(props);
+//         this.state ={
+//             isEditing: false,
+//             text: ""
+//         }
+//     }
 
-    // const {
-    //     todo,
-    //     markCompleted,
-    //     getEditTodo,
-    //     todoEditingId,
-    //     editTodo,
-    //     index,
-    //     removeTodo
-    // } = props
+//     // const {
+//     //     todo,
+//     //     markCompleted,
+//     //     getEditTodo,
+//     //     todoEditingId,
+//     //     editTodo,
+//     //     index,
+//     //     removeTodo
+//     // } = props
 
-    // const this.state.isEditing = this.prosp.todoEditingId === this.props.todo.id
-    // const [text, setText] = useState(todo.text)
+//     // const this.state.isEditing = this.prosp.todoEditingId === this.props.todo.id
+//     // const [text, setText] = useState(todo.text)
    
     
-    onEditTodo = () => {
-        this.props.editTodo({
-            todo: this.props.todo,
-            text: this.state.text
-        }, this.props.index)
-        this.props.getEditTodo('')
+//     onEditTodo = () => {
+//         this.props.editTodo({
+//             todo: this.props.todo,
+//             text: this.state.text
+//         }, this.props.index)
+//         this.props.getEditTodo('')
+//     }
+
+//     setText = (e) =>{
+//         this.setState({
+//             [e.target.title]: e.target.value,
+//         })  
+//       }
+
+//     render(){
+
+//         this.isEditing = this.props.todoEditingId === this.props.todo.id
+
+//         return (
+//         <li className={`${this.isEditing ? 'editing' : ''} ${this.props.todo.isCompleted ? 'completed' : ''}`}>
+//             {
+//                 !this.isEditing ?
+//                     <div className="view">
+//                         <input
+//                             className="itemList"
+//                             type="checkbox"
+//                             checked={this.props.todo.isCompleted}
+//                             onChange={() => this.props.markCompleted(this.props.todo.id)}
+//                         />
+//                         <label onDoubleClick={() => 
+//                             {this.props.getEditTodo(this.props.todo.id)}}
+//                         >
+//                             {this.props.todo.text}
+//                         </label>
+//                         <button className="remove" onClick={() => this.props.removeTodo(this.props.todo.id)} />
+//                     </div> :
+//                     <input
+//                         className="edit"
+//                         // value={text}
+//                         defaultValue={this.props.todo.text}
+//                         title='text'
+//                         onChange={this.setText}
+//                         onBlur={this.onEditTodo}
+//                         onKeyPress={(e) => {
+//                             if (e.key === 'Enter' && this.props.todo.text) {
+//                                 this.onEditTodo()
+//                             }
+//                         }}
+//                     />
+//             }
+//         </li>
+//     )
+//     }
+// }
+
+// export default Todo
+
+import React, { useState } from 'react'
+
+const Todo = (props => {
+    const {
+        todo,
+        markCompleted,
+        getEditTodo,
+        todoEditingId,
+        editTodo,
+        index,
+        removeTodo
+    } = props
+    const isEditing = todoEditingId === todo.id
+    const [text, setText] = useState(todo.text)
+    const onEditTodo = () => {
+        editTodo({
+            ...todo,
+            text
+        }, index)
+        getEditTodo('')
     }
 
-    setText = (e) =>{
-        this.setState({
-            [e.target.title]: e.target.value,
-        })  
-      }
-
-    render(){
-
-        this.isEditing = this.props.todoEditingId === this.props.todo.id
-
-        return (
-        <li className={`${this.isEditing ? 'editing' : ''} ${this.props.todo.isCompleted ? 'completed' : ''}`}>
+    return (
+        <li className={`${isEditing ? 'editing' : ''} ${todo.isCompleted ? 'completed' : ''}`}>
             {
-                !this.isEditing ?
+                !isEditing ?
                     <div className="view">
                         <input
                             className="itemList"
                             type="checkbox"
-                            checked={this.props.todo.isCompleted}
-                            onChange={() => this.props.markCompleted(this.props.todo.id)}
+                            checked={todo.isCompleted}
+                            onChange={() => markCompleted(todo.id)}
                         />
-                        <label onDoubleClick={() => 
-                            {this.props.getEditTodo(this.props.todo.id)}}
-                        >
-                            {this.props.todo.text}
-                        </label>
-                        <button className="remove" onClick={() => this.props.removeTodo(this.props.todo.id)} />
+                        <label onDoubleClick={() => getEditTodo(todo.id)}>{todo.text}</label>
+                        <button className="remove" onClick={() => removeTodo(todo.id)} />
                     </div> :
                     <input
                         className="edit"
-                        // value={text}
-                        defaultValue={this.props.todo.text}
-                        title='text'
-                        onChange={this.setText}
-                        onBlur={this.onEditTodo}
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        onBlur={onEditTodo}
                         onKeyPress={(e) => {
-                            if (e.key === 'Enter' && this.props.todo.text) {
-                                this.onEditTodo()
+                            if (e.key === 'Enter' && text) {
+                                onEditTodo()
                             }
                         }}
                     />
             }
         </li>
     )
-    }
-}
+})
 
 export default Todo
