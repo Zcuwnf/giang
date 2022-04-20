@@ -47,7 +47,7 @@ const App = () => {
   useEffect( () =>{
     if (status === 'ALL') {
       if (listTodos.length === 0) {
-        localStorage.removeItem("todos");
+        localStorage.removeItem("todos")
       } else localStorage.setItem("todos", JSON.stringify(listTodos))
     }
   }, [listTodos])
@@ -147,7 +147,7 @@ const App = () => {
           numOfTodos={listTodos.length}
         />
       </div>
-    );
+    )
 
   // }
 }
