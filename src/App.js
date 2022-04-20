@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import TodoList from './components/Todolist'
 import Header from './components/Header'
 import Footer from './components/Footer'
