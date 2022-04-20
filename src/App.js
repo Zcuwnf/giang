@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import TodoList from './components/TodoList'
+import React, { useEffect, useState } from 'react';
+import TodoList from './components/Todolist'
 import Header from './components/Header'
 import Footer from './components/Footer'
 
@@ -11,8 +11,8 @@ const filterByStatus = (listTodos = [], status = '', id) => {
       return listTodos.filter(item => !item.isCompleted)
     case 'COMPLETED':
       return listTodos.filter(item => item.isCompleted)
-    case 'REMOVE':
-      return listTodos.filter(item => item.id !== id)
+    // case 'REMOVE':
+    //   return listTodos.filter(item => item.id !== id)
     default:
       return listTodos
   }
@@ -22,43 +22,43 @@ const filterTodosLeft = (listTodos = []) => {
   return listTodos.filter(item => !item.isCompleted)
 }
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state= {
-      listTodos: [],
-      isCheckedAll: false,
-      status: 'ALL',
-      todoEditingId: ''
-    }
-  }
+const App = () => {
+  const [listTodos, setList] = useState([])
+  const [isCheckedAll, setisCheckedAll] = useState(false)
+  const [status, setStatus] = useState('ALL')
+  const [todoEditingId, setEdit] = useState('')
+  // state = {
+  //   listTodos: [],
+  //   isCheckedAll: false,
+  //   status: 'ALL',
+  //   todoEditingId: ''
+  // }
 
-  componentDidMount = () => {
-    const listTodos = localStorage.getItem("todos");
+  useEffect( () => {
+    const listTodos = localStorage.getItem("todos")
     if (listTodos) {
-      const savedlistTodos = JSON.parse(listTodos);
-      this.setState({ listTodos: savedlistTodos });
+      const savedlistTodos = JSON.parse(listTodos)
+      setList(savedlistTodos)
     } else {
-      console.log("Empty");
+      console.log("Empty")
     }
-  }
+  },[])
 
-  componentDidUpdate(prevState) {
-    if (this.state.listTodos?.length !== prevState.todo?.length) {
-      if (this.state.listTodos.length === 0) {
+  useEffect( () =>{
+    if (status === 'ALL') {
+      if (listTodos.length === 0) {
         localStorage.removeItem("todos");
-      } else localStorage.setItem("todos", JSON.stringify(this.state.listTodos));
+      } else localStorage.setItem("todos", JSON.stringify(listTodos))
     }
+  }, [listTodos])
+
+  const addTodos = (todo) => {
+      setList ([...listTodos, todo])
+   
   }
 
-  addTodos = (todo = {}) => {
-    this.setState(preState => ({
-      listTodos: [...preState.listTodos, todo]
-    }))
-  }
-
-  markCompleted = (id = '') => {
-    const { listTodos } = this.state
+  const markCompleted = (id = '') => {
+    // const { listTodos } = this.state
     let isCheckedAll = true
     const updatedListTodos = listTodos.map(item => {
       if ((!item.isCompleted && item.id !== id) || (item.isCompleted && item.id === id)) {
@@ -69,73 +69,87 @@ class App extends Component {
       }
       return item
     })
-    this.setState({
-      isCheckedAll,
-      listTodos: updatedListTodos
-    })
+    // this.setState({
+    //   isCheckedAll,
+    //   listTodos: updatedListTodos
+    // })
+    setList(updatedListTodos)
   }
 
-  checkAll = () => {
-    const { listTodos, isCheckedAll } = this.state
+  const checkAll = () => {
+    // const { listTodos, isCheckedAll } = this.state
     const updatedListTodos = listTodos.map(item => ({ ...item, isCompleted: !isCheckedAll }))
-    this.setState(preState => ({
-      isCheckedAll: !preState.isCheckedAll,
-      listTodos: updatedListTodos
-    }))
+    // this.setState(preState => ({
+    //   isCheckedAll: !preState.isCheckedAll,
+    //   listTodos: updatedListTodos
+    // }))
+    setisCheckedAll(!isCheckedAll)
+    setList(updatedListTodos)
   }
 
-  clearCompleted = () => {
-    this.setState(preState => ({
-      listTodos: filterTodosLeft(preState.listTodos)
-    }))
+  const clearCompleted = () => {
+    // this.setState(preState => ({
+    //   listTodos: filterTodosLeft(preState.listTodos)
+    // }))
+    const updatedListTodos = [...listTodos].filter(todo => !todo.isCompleted)
+    setList(updatedListTodos)
   }
 
-  getEditTodo = (id = '') => {
-    this.setState({
-      todoEditingId: id
-    })
+  const getEditTodo = (id = '') => {
+    // this.setState({
+    //   todoEditingId: id
+    // })
+    const todoEditingId = id
+    setEdit (todoEditingId)
   }
 
-  editTodo = (todo, index) => {
-    const { listTodos } = this.state
+  const editTodo = (todo, index) => {
+    // const { listTodos } = this.state
+    // listTodos.splice(index, 1, todo)
+    // this.setState({ listTodos })
     listTodos.splice(index, 1, todo)
-    this.setState({ listTodos })
+    setList(listTodos)
   }
 
-  removeTodo = (id = '') => {
-    this.setState(prevState => ({
-      listTodos: filterByStatus(prevState.listTodos, 'REMOVE', id)
-    }))
+  const removeTodo = (id = '') => {
+    // this.setState(prevState => ({
+    //   listTodos: filterByStatus(prevState.listTodos, 'REMOVE', id)
+    // }))
+    const updatedListTodos = [...listTodos].filter(todo => todo.id !== id)
+    setList(updatedListTodos)
   }
 
-  render() {
-    const { listTodos, isCheckedAll, status, todoEditingId } = this.state
+  const setStatusFilter = (s) => {
+    setStatus(s)
+  }
+  // render() {
+    // const { listTodos, isCheckedAll, status, todoEditingId } = this.state
     return (
       <div className="todoapp">
         <Header
-          addTodo={this.addTodos}
+          addTodo={addTodos}
         />
         <TodoList
           listTodos={filterByStatus(listTodos, status)}
-          markCompleted={this.markCompleted}
-          checkAll={this.checkAll}
+          markCompleted={markCompleted}
+          checkAll={checkAll}
           isCheckedAll={isCheckedAll}
           todoEditingId={todoEditingId}
-          getEditTodo={this.getEditTodo}
-          editTodo={this.editTodo}
-          removeTodo={this.removeTodo}
+          getEditTodo={getEditTodo}
+          editTodo={editTodo}
+          removeTodo={removeTodo}
         />
         <Footer
           activeButton={status}
-          setStatusFilter={(status) => this.setState({ status })}
-          clearCompleted={this.clearCompleted}
+          setStatusFilter={setStatusFilter}
+          clearCompleted={clearCompleted}
           numOfTodosLeft={filterTodosLeft(listTodos).length}
           numOfTodos={listTodos.length}
         />
       </div>
     );
 
-  }
+  // }
 }
 
 export default App;
