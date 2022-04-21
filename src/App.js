@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import TodoList from './components/Todolist'
+import TodoList from './components/TodoList'
 import Header from './components/Header'
 import Footer from './components/Footer'
 
